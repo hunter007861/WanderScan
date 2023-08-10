@@ -1,25 +1,68 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
+import { loginSuccess, userLoaded, userLoading } from '../slice/loginSlice';
+import { ProgressSpinner } from 'primereact/progressspinner';
+import { useDispatch, useSelector } from 'react-redux';
+import { Axios } from '../AxiosConfig';
+import { useNavigate } from 'react-router-dom';
 
 export const Login = () => {
+    const [details, setDetails] = useState({
+        userID: "",
+        password: "",
+    })
+    
+    const loading = useSelector(state => state.login.isloading);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const onSubmit = async () => {
+        console.log(details)
+        await dispatch(userLoading())
+        await Axios.post("/user/login", details)
+            .then(async (res) => {
+                console.log(res)
+                if (res.data.status = 200) {
+                    await dispatch(loginSuccess(res.data));
+                    await Axios.get("/user/dashboard", {
+                        headers: {
+                            "User-Authorization": res.data.token,
+                            "Content-Type": 'application/json'
+                        }
+                    }).then(async (resp) => {
+                        dispatch(userLoaded(resp.data))
+                        navigate("/")
+                    })
+                }
+                else {
+                    console.log("loginFailed")
+                }
+            }).catch((err) => {
+                console.log(err)
+            })
+    }
+
     return (
         <div className="login-body">
             <div className="login-wrapper">
                 <div className="login-panel">
                     <img src="assets/layout/images/logo-dark.svg" className="logo" alt="diamond-layout" />
-
-                    <div className="login-form">
-                        <h2>Login</h2>
-                        <p>
-                            Already have an account? <a href="/">Login</a>
-                        </p>
-                        <InputText placeholder="Full Name" />
-                        <InputText placeholder="Email" />
-                        <Password placeholder="Password" />
-                        <Button label="CONTINUE" type="button"></Button>
-                    </div>
+                    {loading ?
+                        <div className="login-form">
+                            <ProgressSpinner />
+                        </div> :
+                        <div className="login-form">
+                            <h2>Login</h2>
+                            <p>
+                                Dont have an account? <a href="/">Signup</a>
+                            </p>
+                            <InputText placeholder="Email" onChange={(e) => { setDetails({ ...details, userID: e.target.value }) }} />
+                            <Password placeholder="Password" onChange={(e) => { setDetails({ ...details, password: e.target.value }) }} />
+                            <Button label="Login" type="button" onClick={onSubmit}></Button>
+                        </div>
+                    }
 
                     <p>
                         A problem? <a href="/">Click here</a> and let us help you.
