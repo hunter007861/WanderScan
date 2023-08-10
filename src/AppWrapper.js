@@ -19,6 +19,7 @@ const AppWrapper = () => {
     }, [location]);
 
     useEffect(() => {
+        
         dispatch(userLoading());
         Axios.get("/user/gettoken")
             .then(async (resp) => {
@@ -44,7 +45,7 @@ const AppWrapper = () => {
     const tokenRefresh = () => {
         Axios.get("/user/gettoken")
             .then(async (resp) => {
-                await dispatch(loginSuccess(resp))
+                await dispatch(loginSuccess(resp.data))
             }).catch(err => {
                 console.log(err)
             })

@@ -1,18 +1,24 @@
 import axios from "axios";
 import { useSelector } from 'react-redux';
 
-const AuthToken = () => {
-   // eslint-disable-next-line
-  const aa = useSelector(state => state.login.token)
-}
 
 const Axios = axios.create({
     baseURL: "http://localhost:5000",
     headers: {
-        "User-Authorization": AuthToken.aa,
         "Content-Type": 'application/json',
     },
     withCredentials:true
 })
+
+const AuthToken = () => {
+    const token = useSelector(state => state.login.token);
+
+    if (token) {
+      Axios.defaults.headers["User-Authorization"] = token;
+    }
+  
+    return Axios;
+}
+
 
 export { Axios, AuthToken }

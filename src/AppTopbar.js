@@ -3,10 +3,21 @@ import { classNames } from 'primereact/utils';
 import { Link } from 'react-router-dom';
 import AppBreadcrumb from './AppBreadcrumb';
 import AppMenu from './AppMenu';
+import { logout } from './slice/loginSlice';
+import { useDispatch } from 'react-redux';
+import { AuthToken, Axios } from './AxiosConfig';
 
 const AppTopbar = (props) => {
     const notificationsItemClassName = classNames('notifications-item', { 'active-menuitem': props.topbarNotificationMenuActive });
     const profileItemClassName = classNames('profile-item', { 'active-menuitem fadeInDown': props.topbarUserMenuActive });
+    const dispatch = useDispatch();
+    const axiosInstance = AuthToken();
+    
+    const Logout = () => {
+        axiosInstance.patch("/user/logout").then(() => {
+            dispatch(logout())
+        })
+    }
 
     return (
         <div className="layout-topbar">
@@ -138,7 +149,7 @@ const AppTopbar = (props) => {
                                 </button>
                             </li>
                             <li>
-                                <button type="button" className="p-link">
+                                <button type="button" className="p-link" onClick={Logout}>
                                     <i className="pi pi-power-off"></i>
                                     <span>Logout</span>
                                 </button>
