@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 const Axios = axios.create({
     baseURL: "http://localhost:5000",
-    headers: {
+    headers: { 
         "Content-Type": 'application/json',
     },
     withCredentials:true

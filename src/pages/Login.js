@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
-import { loginSuccess, userLoaded, userLoading } from '../slice/loginSlice';
+import { loginSuccess, logout, userLoaded, userLoading } from '../slice/loginSlice';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { useDispatch, useSelector } from 'react-redux';
 import { Axios } from '../AxiosConfig';
@@ -37,9 +37,11 @@ export const Login = () => {
                     })
                 }
                 else {
+                    dispatch(logout())
                     console.log("loginFailed")
                 }
             }).catch((err) => {
+                dispatch(logout())
                 console.log(err)
             })
     }

@@ -7,7 +7,7 @@ import { NotFound } from './pages/NotFound';
 import { Access } from './pages/Access';
 import { useDispatch, useSelector } from 'react-redux';
 import { Axios } from './AxiosConfig';
-import { loginSuccess, userLoaded, userLoading } from './slice/loginSlice';
+import { loginSuccess, logout, userLoaded, userLoading } from './slice/loginSlice';
 
 const AppWrapper = () => {
     let location = useLocation();
@@ -34,9 +34,11 @@ const AppWrapper = () => {
                         dispatch(userLoaded(res.data));
                         navigate("/")
                     }).catch(err => {
+                        dispatch(logout())
                         console.log(err)
                     })
             }).catch(err => {
+                dispatch(logout())
                 console.log(err)
             })
         // eslint-disable-next-line

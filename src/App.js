@@ -43,6 +43,7 @@ import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
 import './App.scss';
+import QRPage from './components/QRPage';
 
 const App = () => {
     const [menuActive, setMenuActive] = useState(false);
@@ -74,6 +75,7 @@ const App = () => {
 
     const breadcrumb = [
         { path: '/', parent: 'Dashboard', label: 'Dashboard' },
+        { path: '/', parent: 'QR List', label: 'QR Table' },
         { path: '/formlayout', parent: 'UI Kit', label: 'Form Layout' },
         { path: '/input', parent: 'UI Kit', label: 'Input' },
         { path: '/floatlabel', parent: 'UI Kit', label: 'Float Label' },
@@ -108,7 +110,10 @@ const App = () => {
         {
             label: 'Favorites',
             icon: 'pi pi-fw pi-home',
-            items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
+            items: [
+                { label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' },
+                { label: 'QR Page', icon: 'pi pi-fw pi-qrcode', to: '/qrpage' }
+            ]
         },
         { separator: true },
         {
@@ -571,6 +576,7 @@ const App = () => {
                     </div>
                     <Routes>
                         <Route path="/" element={<Dashboard />} />
+                        <Route path="/qrpage" element={<QRPage />} />
                         <Route path="/formlayout" element={<FormLayoutDemo />} />
                         <Route path="/input" element={<InputDemo />} />
                         <Route path="/floatlabel" element={<FloatLabelDemo />} />
