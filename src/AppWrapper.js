@@ -8,6 +8,7 @@ import { Access } from './pages/Access';
 import { useDispatch, useSelector } from 'react-redux';
 import { Axios } from './AxiosConfig';
 import { loginSuccess, logout, userLoaded, userLoading } from './slice/loginSlice';
+import Artifact from './pages/Artifact';
 
 const AppWrapper = () => {
     let location = useLocation();
@@ -72,6 +73,8 @@ const AppWrapper = () => {
                     <Route path="/error" element={<Error />} />
                     <Route path="/notfound" element={<NotFound />} />
                     <Route path="/access" element={<Access />} />
+                    <Route path="/artifact/:id" element={<Artifact />} />
+
                     <Route
                         path="*"
                         element={<Navigate to="/login" replace />}

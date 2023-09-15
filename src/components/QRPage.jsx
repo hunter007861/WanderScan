@@ -2,19 +2,17 @@ import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Rating } from 'primereact/rating';
-import { Tag } from 'primereact/tag';
 import React, { useEffect, useState } from 'react';
-import ProductService from '../service/ProductService';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import QRCode from 'react-qr-code';
 import download from 'downloadjs';
 import * as htmlToImage from 'html-to-image';
+import { Axios } from '../AxiosConfig';
 
 const QRPage = () => {
     const [products, setProducts] = useState([]);
-    const productService = new ProductService();
     const [visible, setVisible] = useState(false);
     const [artifact, setArtifact] = useState({
         artifactName: '',
@@ -39,30 +37,21 @@ const QRPage = () => {
     );
 
     useEffect(() => {
-        productService.getProductsSmall().then((data) => setProducts(data));
+        const getData = async () => {
+            await Axios.get('/user/getAllArtifact').then((resp) => {
+                setProducts(resp.data);
+            });
+        };
+        getData();
     }, []);
 
-    const formatCurrency = (value) => {
-        return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-    };
-
     const imageBodyTemplate = (product) => {
-        return <QRCode id={product.id} size={80} value={product.name} viewBox={`0 0 80 80`} />;
-    };
-
-    const priceBodyTemplate = (product) => {
-        return formatCurrency(product.price);
-    };
-
-    const ratingBodyTemplate = (product) => {
-        return <Rating value={product.rating} readOnly cancel={false} />;
+        return <QRCode id={product._id} size={80} value={`http://192.168.0.115:3000/artifact/${product._id}`} viewBox={`0 0 80 80`} />;
     };
 
     const ActionBodyTemplate = (product) => {
-        const downloadQR = async (qrValue) => {
-            const qrCodeImage = await htmlToImage.toPng(
-                document.getElementById(`${product.id}`)
-            );
+        const downloadQR = async () => {
+            const qrCodeImage = await htmlToImage.toPng(document.getElementById(`${product._id}`));
 
             // Trigger the download ohtmlToImagef the QR code as a PNG file
             download(qrCodeImage, `${product.name}_qr_code.png`, 'image/png');
@@ -72,22 +61,6 @@ const QRPage = () => {
                 <Button icon="pi pi-download" className="mr-2 mb-2" onClick={downloadQR} />
             </div>
         );
-    };
-
-    const getSeverity = (product) => {
-        switch (product.inventoryStatus) {
-            case 'INSTOCK':
-                return 'success';
-
-            case 'LOWSTOCK':
-                return 'warning';
-
-            case 'OUTOFSTOCK':
-                return 'danger';
-
-            default:
-                return null;
-        }
     };
 
     const header = (
@@ -148,14 +121,18 @@ const QRPage = () => {
                     </div>
                 </div>
             </Dialog>
-            <DataTable value={products} header={header} footer={footer}>
-                <Column field="name" header="Name"></Column>
-                <Column header="QR Code" body={imageBodyTemplate}></Column>
-                <Column field="price" header="Type" body={priceBodyTemplate}></Column>
-                <Column field="category" header="Location"></Column>
-                <Column field="rating" header="Description" body={ratingBodyTemplate}></Column>
-                <Column field="rating" header="Actions" body={ActionBodyTemplate}></Column>
-            </DataTable>
+            {products && products?.length > 0 ? (
+                <DataTable value={products} header={header} footer={footer}>
+                    <Column field="artifactName" header="Name"></Column>
+                    <Column header="QR Code" body={imageBodyTemplate}></Column>
+                    <Column field="artifactType" header="Type"></Column>
+                    <Column field="location" header="Location"></Column>
+                    <Column field="description" header="Description"></Column>
+                    <Column header="Actions" body={ActionBodyTemplate}></Column>
+                </DataTable>
+            ) : (
+                <p>Loading...</p>
+            )}
         </div>
     );
 };
