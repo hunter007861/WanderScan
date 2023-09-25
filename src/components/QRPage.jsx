@@ -28,8 +28,10 @@ const QRPage = () => {
                 label="Yes"
                 icon="pi pi-check"
                 onClick={() => {
-                    console.log(artifact);
-                    setVisible(false);
+                    Axios.post('/user/createArtifact', artifact).then((res) => {
+                        setProducts([...products, res.data]);
+                        setVisible(false);
+                    });
                 }}
                 autoFocus
             />
@@ -57,7 +59,11 @@ const QRPage = () => {
             download(qrCodeImage, `${product.name}_qr_code.png`, 'image/png');
         };
         return (
-            <div>
+            <div className='flex'>
+                <Button icon="pi pi-pencil"  className="mr-2 mb-2 p-button-success" onClick={downloadQR} />
+
+                <Button icon="pi pi-trash" className="mr-2 mb-2 p-button-danger"  onClick={downloadQR} />
+
                 <Button icon="pi pi-download" className="mr-2 mb-2" onClick={downloadQR} />
             </div>
         );

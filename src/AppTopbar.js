@@ -4,20 +4,20 @@ import { Link } from 'react-router-dom';
 import AppBreadcrumb from './AppBreadcrumb';
 import AppMenu from './AppMenu';
 import { logout } from './slice/loginSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AuthToken, Axios } from './AxiosConfig';
-
+import museum from './assets/istockphoto-675609776-612x612.jpg'
 const AppTopbar = (props) => {
     const notificationsItemClassName = classNames('notifications-item', { 'active-menuitem': props.topbarNotificationMenuActive });
     const profileItemClassName = classNames('profile-item', { 'active-menuitem fadeInDown': props.topbarUserMenuActive });
     const dispatch = useDispatch();
     const axiosInstance = AuthToken();
-    
+    const User = useSelector((state) => state.login.user.entityName);
     const Logout = () => {
-        axiosInstance.patch("/user/logout").then(() => {
-            dispatch(logout())
-        })
-    }
+        axiosInstance.patch('/user/logout').then(() => {
+            dispatch(logout());
+        });
+    };
 
     return (
         <div className="layout-topbar">
@@ -120,11 +120,11 @@ const AppTopbar = (props) => {
 
                     <li className={profileItemClassName}>
                         <button type="button" className="p-link" onClick={props.onTopbarUserMenu}>
-                            <img src="assets/demo/images/avatar/profile.jpg" alt="diamond-layout" className="profile-image" />
-                            <span className="profile-name">Amelia Stone</span>
+                            <img src={museum} alt="diamond-layout" className="profile-image" />
+                            <span className="profile-name">{User}</span>
                         </button>
                         <ul className="profile-menu fade-in-up">
-                            <li>
+                            {/* <li>
                                 <button type="button" className="p-link">
                                     <i className="pi pi-user"></i>
                                     <span>Profile</span>
@@ -147,7 +147,7 @@ const AppTopbar = (props) => {
                                     <i className="pi pi-inbox"></i>
                                     <span>Inbox</span>
                                 </button>
-                            </li>
+                            </li> */}
                             <li>
                                 <button type="button" className="p-link" onClick={Logout}>
                                     <i className="pi pi-power-off"></i>

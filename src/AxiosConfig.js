@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 
 const Axios = axios.create({
-    baseURL: "http://localhost:5000",
+    baseURL: "http://192.168.0.115:5000",
     headers: { 
         "Content-Type": 'application/json',
     },
